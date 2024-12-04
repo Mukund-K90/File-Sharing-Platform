@@ -27,7 +27,6 @@ var mailService = async (to, sub, body) => {
                 return console.log(err);
             }
             console.log("Message sent:%s", info.accepted);
-            console.log("Preview URL:%s", nodemailer.getTestMessageUrl(info));
         });
     } catch (error) {
         console.error(error);

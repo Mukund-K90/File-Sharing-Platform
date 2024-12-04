@@ -209,10 +209,33 @@
                             window.open(url, '_blank');
                         }
 
-                        function downloadFile(assetId) {
-                            const fileUrl = `https://res-console.cloudinary.com/dwdqnqxr1/media_explorer_thumbnails/${assetId}/download`;
-                            window.location.href = fileUrl;
+                        // function downloadFile(assetId) {
+                        //     const fileUrl = `https://res-console.cloudinary.com/dwdqnqxr1/media_explorer_thumbnails/${assetId}/download`;
+                        //     window.location.href = fileUrl;
+
+                        //     fetch(`/file/delete-after-download/${assetId}`, {
+                        //         method: 'POST',
+                        //     })
+                        // }
+                        function downloadFile(assetId, fileName) {
+                            // Call the backend API to delete the file after download
+                            fetch(`/file/delete-after-download/${fileName}`, {
+                                method: 'POST',
+                            })
+                                .then(response => {
+                                    if (response.ok) {
+                                        // Once deletion is initiated, redirect to the Cloudinary download URL
+                                        const fileUrl = `https://res-console.cloudinary.com/dwdqnqxr1/media_explorer_thumbnails/${assetId}/download`;
+                                        window.location.href = fileUrl; // Trigger the download
+                                    } else {
+                                        console.error('Failed to delete the file from the server.');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                });
                         }
+
 
                         function deleteFile(publicId) {
                             if (confirm('Are you sure you want to delete this file?')) {

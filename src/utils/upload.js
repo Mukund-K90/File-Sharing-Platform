@@ -25,7 +25,7 @@ exports.fileUpload = async (file, type, filename) => {
 
 //get file url
 exports.getFileUrl = (fileName) => {
-    cloudinary.api.resource(fileName, function (result) {
+    cloudinary.api.resource(`files/${fileName}`, function (result) {
         console.log(result);
         const imageUrl = result.url;
         console.log("Image URL:", imageUrl);
@@ -33,8 +33,8 @@ exports.getFileUrl = (fileName) => {
 };
 
 
+
 //delete file
-exports.deleteFile = async (productId) => {
-    const result = await cloudinary.uploader.destroy(publicId);
-    return result;
+exports.deleteFile = async (publicId) => {
+    return await cloudinary.uploader.destroy(`files/${publicId}`);
 }

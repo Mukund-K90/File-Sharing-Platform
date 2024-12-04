@@ -12,7 +12,12 @@ const userSchema = new mongoose.Schema({
                 name: String,
                 id: mongoose.Schema.Types.ObjectId,
                 email: String,
+                sharedDate: {
+                    type: Date,
+                    default: Date.now
+                },
             },
+
         }
     ]
 });

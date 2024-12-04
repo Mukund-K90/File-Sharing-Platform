@@ -1,5 +1,5 @@
 
-const { fileUpload, getFileUrl, signedUrl } = require('../../../utils/upload');
+const { fileUpload, getFileUrl, signedUrl, deleteFile } = require('../../../utils/upload');
 const UploadModel = require('../../../model/file');
 const { default: status } = require('http-status');
 const { errorResponse } = require('../../../utils/apiResponse');
@@ -17,10 +17,12 @@ exports.fileUpload = async (req, res) => {
             return errorResponse(req, res, status.NOT_FOUND, ERROR_MESSAGE.NOT_FILE);
         }
 
+
         const fileMetadata = req.files.file[0];
         const filePath = fileMetadata.path;
         const fileName = fileMetadata.filename.split('.')[0];
         const mimetype = fileMetadata.mimetype;
+        console.log(fileName);
 
         const resourceType = mimetype.startsWith('image/')
             ? 'image'
@@ -28,6 +30,16 @@ exports.fileUpload = async (req, res) => {
                 ? 'video'
                 : 'raw';
 
+        if ((resourceType === "image" || resourceType === "raw") && fileMetadata.size > 10485760) {
+            console.log("BIG");
+            req.flash("error", "File is must be less than or equal to 10MB");
+            res.redirect('/home?tab=my-uploads');
+        }
+        if (resourceType === "video" && fileMetadata.size > 104857600) {
+            console.log("BIG");
+            req.flash("error", "Video is must be less than or equal to 100MB");
+            res.redirect('/home?tab=my-uploads');
+        }
         // Calculate file size
         const sizeInKB = fileMetadata.size / 1024;
         const size = sizeInKB > 1024
@@ -36,7 +48,8 @@ exports.fileUpload = async (req, res) => {
 
         const uploadResult = await fileUpload(filePath, resourceType, `files/${fileName}`);
         if (!uploadResult) {
-            return errorResponse(req, res, status.BAD_REQUEST, ERROR_MESSAGE.NOT_UPLOAD);
+            req.flash("error", "File Not Uploaded");
+            res.redirect('/home?tab=my-uploads');
         }
         const uploadData = {
             url: uploadResult.url,
@@ -168,7 +181,8 @@ exports.shareFile = async (req, res) => {
 </html>
 `
         const isMail = await mailService(email, "File Shared", htmlMsg);
-
+        req.flash('success', "File Shared Successfully");
+        res.redirect('/home?tab=my-uploads');
     } catch (err) {
         console.error('Error sharing file:', err);
         res.status(500).json({ success: false, message: 'An error occurred while sharing the file.' });
@@ -190,3 +204,24 @@ exports.deleteFile = async (req, res) => {
         return errorResponse(req, res, status.INTERNAL_SERVER_ERROR, error.message);
     }
 }
+
+
+exports.deleteAfterDownload = async (req, res) => {
+    try {
+        const user = req.user;
+        const { fileName } = req.params;
+
+
+        const isDelete = await deleteFile(fileName);
+        console.log(isDelete);
+
+
+        await UploadModel.findOneAndDelete({ title: fileName });
+
+        // Return a success response to the frontend
+        res.status(200).send({ message: 'File will be deleted after download.' });
+    } catch (error) {
+        console.error('Error during file deletion:', error.message);
+        res.status(500).send('Error occurred while deleting the file.');
+    }
+};

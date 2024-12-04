@@ -3,6 +3,7 @@ const router = express.Router();
 const { authentication } = require('../../middleware/auth.middleware');
 const UploadModel = require('../../model/file');
 const { getFileUrl } = require('../../utils/upload');
+const User = require('../../model/user');
 
 // Welcome Page
 router.get('/', (req, res) => {
@@ -71,16 +72,22 @@ router.get('/shared-files', authentication, async (req, res) => {
             for (const sharedFile of user.sharedFiles) {
                 const file = await UploadModel.findById(sharedFile.fileId);
                 if (file) {
-                    files.push(file);
+                    files.push({
+                        file,
+                        sharedBy: sharedFile.sharedBy
+                    });
                 }
             }
         }
+
+
         res.render('shared-files', { uploads: files });
     } catch (error) {
         console.error('Error fetching uploads:', error);
         res.status(500).send('Error fetching uploads');
     }
 });
+
 
 
 

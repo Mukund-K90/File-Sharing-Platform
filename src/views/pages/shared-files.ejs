@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Uploads</title>
+    <title>Shared Files</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
@@ -41,22 +41,21 @@
 
 <body>
     <div class="my-uploads container">
-
         <!-- Display Files in Grid Layout -->
         <% if (uploads && uploads.length> 0) { %>
             <div class="file-grid row">
                 <% uploads.forEach(function(upload) { %>
                     <div class="card">
                         <!-- File Preview -->
-                        <% if (upload.type.startsWith('image/')) { %>
-                            <img src="<%= upload.url %>" class="card-img-top" alt="<%= upload.title %>"
+                        <% if (upload.file.type.startsWith('image/')) { %>
+                            <img src="<%= upload.file.url %>" class="card-img-top" alt="<%= upload.file.title %>"
                                 style="height: 200px; object-fit: contain;">
                             <% } else { %>
                                 <div class="card-img-top d-flex align-items-center justify-content-center"
                                     style="height: 200px; background-color: #f7f7f7;">
-                                    <% if (upload.type.startsWith('video/')) { %>
+                                    <% if (upload.file.type.startsWith('video/')) { %>
                                         <i class="bi bi-camera-reels display-4 text-muted"></i>
-                                        <% } else if (upload.type==='application/pdf' ) { %>
+                                        <% } else if (upload.file.type==='application/pdf' ) { %>
                                             <i class="bi bi-file-earmark-pdf display-4 text-danger"></i>
                                             <% } else { %>
                                                 <i class="bi bi-file-earmark-zip display-4 text-primary"></i>
@@ -66,47 +65,45 @@
 
                                     <!-- File Details -->
                                     <div class="card-body">
-                                        <h5 class="card-title text-truncate" title="<%= upload.title %>">
-                                            <%= upload.title %>
+                                        <h5 class="card-title text-truncate" title="<%= upload.file.title %>">
+                                            <%= upload.file.title %>
                                         </h5>
                                         <p class="text-muted mb-2">
                                             <small>
-                                                Uploaded on: <%= upload.uploadedAt %><br>
-                                                    File Size: <%= upload.size %>
-
+                                                Shared on: <%= new Date(upload.sharedBy.sharedDate).toLocaleDateString()
+                                                    %><br>
+                                                    File Size: <b>
+                                                        <%= upload.file.size %><br>
+                                                    </b>
+                                                    By: <b>
+                                                        <%= upload.sharedBy.email %>
+                                                    </b>
                                             </small>
-                                        <div class="card-footer bg-white border-top-0 mt-auto">
-                                            <div class="d-flex justify-content-start gap-2">
-                                                <% if (upload.type.startsWith('image/')) { %>
-                                                    <button class="btn btn-primary btn-sm"
-                                                        onclick="openImage('<%= upload.url %>')">
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
-
-                                                    <% } %>
-                                                        <button class="btn btn-primary btn-sm"
-                                                            onclick="downloadImage()">
-                                                            <i class="bi bi-download"></i>
-                                                        </button>
-                                                        <button class="btn btn-danger btn-sm"
-                                                            onclick="deleteFile('<%= upload._id %>')">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                            </div>
-                                        </div>
                                         </p>
                                     </div>
 
                                     <!-- Action Buttons -->
-
+                                    <div class="card-footer bg-white border-top-0 mt-auto">
+                                        <div class="d-flex justify-content-start gap-2">
+                                            <% if (upload.file.type.startsWith('image/')) { %>
+                                                <button class="btn btn-primary btn-sm"
+                                                    onclick="openImage('<%= upload.file.url %>')">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                                <% } %>
+                                                    <button class="btn btn-primary btn-sm"
+                                                        onclick="downloadFile('<%= upload.file.asset_id %>', '<%= upload.file.title %>')">
+                                                        <i class="bi bi-download"></i>
+                                                    </button>
+                                        </div>
+                                    </div>
                     </div>
                     <% }); %>
             </div>
             <% } else { %>
-                <p class="text-center">No uploads available. Please upload your files.</p>
+                <p class="text-center">No shared files available.</p>
                 <% } %>
     </div>
-
 
 </body>
 
