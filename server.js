@@ -9,6 +9,7 @@ const { connectDb } = require('./src/config/db');
 const { request } = require('http');
 app.use(cookieParser());
 
+
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/assets', express.static(path.join(__dirname, 'src/assets')));
