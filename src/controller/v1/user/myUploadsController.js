@@ -168,9 +168,7 @@ exports.shareFile = async (req, res) => {
 </html>
 `
         const isMail = await mailService(email, "File Shared", htmlMsg);
-        if (!isMail) {
-            return res.status(500).send("Error sending email");
-        }
+        
     } catch (err) {
         console.error('Error sharing file:', err);
         res.status(500).json({ success: false, message: 'An error occurred while sharing the file.' });
