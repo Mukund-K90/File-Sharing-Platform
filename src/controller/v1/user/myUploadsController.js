@@ -208,17 +208,11 @@ exports.deleteFile = async (req, res) => {
 
 exports.deleteAfterDownload = async (req, res) => {
     try {
-        const user = req.user;
         const { fileName } = req.params;
-
-
         const isDelete = await deleteFile(fileName);
-        console.log(isDelete);
-
-
-        await UploadModel.findOneAndDelete({ title: fileName });
-
-        // Return a success response to the frontend
+        if (isDelete) {
+            await UploadModel.findOneAndDelete({ title: fileName });
+        }
         res.status(200).send({ message: 'File will be deleted after download.' });
     } catch (error) {
         console.error('Error during file deletion:', error.message);

@@ -36,5 +36,7 @@ exports.getFileUrl = (fileName) => {
 
 //delete file
 exports.deleteFile = async (publicId) => {
+    console.log(`files/${publicId}`);
+    
     return await cloudinary.uploader.destroy(`files/${publicId}`);
 }
