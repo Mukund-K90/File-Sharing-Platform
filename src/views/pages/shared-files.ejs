@@ -85,7 +85,7 @@
                                     <!-- Action Buttons -->
                                     <div class="card-footer bg-white border-top-0 mt-auto">
                                         <div class="d-flex justify-content-start gap-2">
-                                            <% if (upload.file.type.startsWith('image/')) { %>
+                                            <% if (upload.file.type.startsWith('image/') || upload.file.type.startsWith('video/')) { %>
                                                 <button class="btn btn-primary btn-sm"
                                                     onclick="openImage('<%= upload.file.url %>')">
                                                     <i class="bi bi-eye"></i>

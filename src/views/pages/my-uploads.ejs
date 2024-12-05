@@ -88,7 +88,8 @@
                                             </small>
                                         <div class="card-footer bg-white border-top-0 mt-auto">
                                             <div class="d-flex justify-content-center gap-2">
-                                                <% if (upload.type.startsWith('image/')) { %>
+                                                <% if (upload.type.startsWith('image/') ||
+                                                    upload.type.startsWith('video/')) { %>
                                                     <button class="btn btn-primary btn-sm"
                                                         onclick="openImage('<%= upload.url %>')">
                                                         <i class="bi bi-eye"></i>
