@@ -91,101 +91,102 @@ exports.shareFile = async (req, res) => {
             req.flash('error', "File Not Found");
             res.redirect('/home?tab=my-uploads');
         }
-
-        recipient.sharedFiles = recipient.sharedFiles || [];
-        recipient.sharedFiles.push({
-            fileId: file._id,
-            url: file.url,
-            sharedBy: {
-                name: user.name,
-                id: user._id,
-                email: user.email,
-                sharedDate: Date.now()
-            },
-        });
-        await recipient.save();
-        const htmlMsg = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Shared Notification</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .email-container {
-            max-width: 600px;
-            margin: 30px auto;
-            background: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .email-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .email-header h1 {
-            font-size: 24px;
-            color: #333333;
-        }
-        .email-body {
-            font-size: 16px;
-            color: #555555;
-            line-height: 1.6;
-            text-align: center;
-        }
-        .email-body p {
-            margin: 10px 0;
-        }
-        .btn {
-            display: inline-block;
-            background-color: #007bff;
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 16px;
-            padding: 12px 24px;
-            margin-top: 20px;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-        .email-footer {
-            text-align: center;
-            font-size: 14px;
-            color: #999999;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="email-container">
-        <div class="email-header">
-            <h1>File Shared with You</h1>
+        else {
+            recipient.sharedFiles = recipient.sharedFiles || [];
+            recipient.sharedFiles.push({
+                fileId: file._id,
+                url: file.url,
+                sharedBy: {
+                    name: user.name,
+                    id: user._id,
+                    email: user.email,
+                    sharedDate: Date.now()
+                },
+            });
+            await recipient.save();
+            const htmlMsg = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>File Shared Notification</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                margin: 0;
+                padding: 0;
+            }
+            .email-container {
+                max-width: 600px;
+                margin: 30px auto;
+                background: #ffffff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            .email-header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .email-header h1 {
+                font-size: 24px;
+                color: #333333;
+            }
+            .email-body {
+                font-size: 16px;
+                color: #555555;
+                line-height: 1.6;
+                text-align: center;
+            }
+            .email-body p {
+                margin: 10px 0;
+            }
+            .btn {
+                display: inline-block;
+                background-color: #007bff;
+                color: #ffffff;
+                text-decoration: none;
+                font-size: 16px;
+                padding: 12px 24px;
+                margin-top: 20px;
+                border-radius: 4px;
+                transition: background-color 0.3s ease;
+            }
+            .btn:hover {
+                background-color: #0056b3;
+            }
+            .email-footer {
+                text-align: center;
+                font-size: 14px;
+                color: #999999;
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="email-container">
+            <div class="email-header">
+                <h1>File Shared with You</h1>
+            </div>
+            <div class="email-body">
+                <p>Hello,</p>
+                <p><strong>${user.name}</strong> has shared a file with you.</p>
+                <p>Click the button below to view the file:</p>
+                <a href="https://file-sharing-platform-bfzs.onrender.com" class="btn" target="_blank">Open File</a>
+            </div>
+            <div class="email-footer">
+                <p>If you have any questions, please contact our support team.</p>
+            </div>
         </div>
-        <div class="email-body">
-            <p>Hello,</p>
-            <p><strong>${user.name}</strong> has shared a file with you.</p>
-            <p>Click the button below to view the file:</p>
-            <a href="https://file-sharing-platform-bfzs.onrender.com" class="btn" target="_blank">Open File</a>
-        </div>
-        <div class="email-footer">
-            <p>If you have any questions, please contact our support team.</p>
-        </div>
-    </div>
-</body>
-</html>
-`
-        const isMail = await mailService(email, "File Shared", htmlMsg);
-        req.flash('success', "File Shared Successfully");
-        res.redirect('/home?tab=my-uploads');
+    </body>
+    </html>
+    `
+            const isMail = await mailService(email, "File Shared", htmlMsg);
+            req.flash('success', "File Shared Successfully");
+            res.redirect('/home?tab=my-uploads');
+        }
     } catch (err) {
         console.error('Error sharing file:', err);
         res.status(500).json({ success: false, message: 'An error occurred while sharing the file.' });
