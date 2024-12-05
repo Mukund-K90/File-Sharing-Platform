@@ -22,8 +22,6 @@ exports.fileUpload = async (req, res) => {
         const filePath = fileMetadata.path;
         const fileName = fileMetadata.filename.split('.')[0];
         const mimetype = fileMetadata.mimetype;
-        console.log(fileName);
-
         const resourceType = mimetype.startsWith('image/')
             ? 'image'
             : mimetype.startsWith('video/')
@@ -65,10 +63,10 @@ exports.fileUpload = async (req, res) => {
         await upload.save();
 
         req.flash('success', "File Uploaded Successfully")
-        res.redirect('/home?tab=my-uploads');
+        return res.redirect('/home?tab=my-uploads');
     } catch (error) {
         console.error('Error uploading file:', error);
-        res.status(500).send('Error uploading file');
+        return res.status(500).send('Error uploading file');
     }
 };
 
@@ -84,7 +82,6 @@ exports.shareFile = async (req, res) => {
             req.flash('error', "User Not found");
             return res.redirect('/home?tab=my-uploads');
         }
-        console.log(recipient);
 
         const file = await UploadModel.findOne({ title: fileId });
 
@@ -188,21 +185,22 @@ exports.shareFile = async (req, res) => {
         return res.redirect('/home?tab=my-uploads');
     } catch (err) {
         console.error('Error sharing file:', err);
-        res.status(500).json({ success: false, message: 'An error occurred while sharing the file.' });
+        return res.status(500).json({ success: false, message: 'An error occurred while sharing the file.' });
     }
 }
 
 //delete file
 exports.deleteFile = async (req, res) => {
     try {
-        fileId = req.params.fileId;
-        const deleteFile = await UploadModel.findByIdAndDelete(fileId);
-        if (!deleteFile) {
+        const fileName = req.params.file;        
+        const isDelete = await deleteFile(fileName);
+        if (!isDelete) {
             req.flash('error', "File Not Deleted")
-            res.redirect('/home?tab=my-uploads');
-        }
+            return res.redirect('/home?tab=my-uploads');
+        }        
+        await UploadModel.findOneAndDelete({ title: fileName });
         req.flash('success', "File Deleted Successfully")
-        res.redirect('/home?tab=my-uploads');
+        return res.redirect('/home?tab=my-uploads');
     } catch (error) {
         return errorResponse(req, res, status.INTERNAL_SERVER_ERROR, error.message);
     }
@@ -234,7 +232,7 @@ exports.deleteAfterDownload = async (req, res) => {
             }
         }
         req.flash('success', "File Downloaded")
-        res.redirect('/home?tab=my-uploads');
+        return res.redirect('/home?tab=my-uploads');
     } catch (error) {
         console.error('Error during file deletion:', error.message);
         res.status(500).send('Error occurred while deleting the file.');

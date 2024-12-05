@@ -265,14 +265,6 @@
                             window.open(url, '_blank');
                         }
 
-                        // function downloadFile(assetId) {
-                        //     const fileUrl = `https://res-console.cloudinary.com/dwdqnqxr1/media_explorer_thumbnails/${assetId}/download`;
-                        //     window.location.href = fileUrl;
-
-                        //     fetch(`/file/delete-after-download/${assetId}`, {
-                        //         method: 'POST',
-                        //     })
-                        // }
                         function downloadFile(assetId, fileName) {
                             const fileUrl = `https://res-console.cloudinary.com/dwdqnqxr1/media_explorer_thumbnails/${assetId}/download`;
                             window.location.href = fileUrl;
@@ -293,9 +285,9 @@
                         }
 
 
-                        function deleteFile(publicId) {
+                        function deleteFile(file) {
                             if (confirm('Are you sure you want to delete this file?')) {
-                                fetch(`/file/delete-file/${publicId}`, {
+                                fetch(`/file/delete-file/${file}`, {
                                     method: 'DELETE',
                                     headers: {
                                         'Content-Type': 'application/json'
@@ -307,43 +299,7 @@
                             }
                         }
 
-
-                        // function shareFile(fileId) {
-                        //     document.getElementById('fileId').value = fileId;
-                        //     const shareModal = new bootstrap.Modal(document.getElementById('shareModal'));
-                        //     shareModal.show();
-                        // }
-
-                        // Handle share form submission
-                        // document.getElementById('shareForm').addEventListener('submit', function (e) {
-                        //     console.log("CLCIKED");
-
-                        //     e.preventDefault();
-
-                        //     const email = document.getElementById('shareEmail').value;
-                        //     const fileId = document.getElementById('fileId').value;
-
-                        //     fetch('/file/share', {
-                        //         method: 'POST',
-                        //         headers: {
-                        //             'Content-Type': 'application/json',
-                        //         },
-                        //         body: JSON.stringify({ email, fileId }),
-                        //     })
-                        //         .then(response => response.json())
-                        //         .then(data => {
-                        //             if (data.success) {
-                        //                 alert('File shared successfully!');
-                        //                 location.reload();
-                        //             } else {
-                        //                 alert(data.message || 'Failed to share the file.');
-                        //             }
-                        //         })
-                        //         .catch(err => console.error('Error sharing file:', err));
-                        // });
                         function setFileId(fileId) {
-                            console.log(fileId);
-
                             document.getElementById('fileId').value = fileId;
                         }
                         setTimeout(() => {
