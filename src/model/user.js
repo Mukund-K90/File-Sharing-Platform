@@ -18,7 +18,8 @@ const userSchema = new mongoose.Schema({
             },
 
         }
-    ]
+    ],
+    plan: String
 });
 
 const User = mongoose.model('User', userSchema);
