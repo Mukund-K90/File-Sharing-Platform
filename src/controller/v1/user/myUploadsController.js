@@ -98,7 +98,7 @@ exports.shareFile = async (req, res) => {
                 name: user.name,
                 id: user._id,
                 email: user.email,
-                sharedDate: Date.now
+                sharedDate: Date.now()
             },
         });
         await recipient.save();
