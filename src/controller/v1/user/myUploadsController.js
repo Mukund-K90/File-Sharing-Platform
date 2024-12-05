@@ -31,12 +31,12 @@ exports.fileUpload = async (req, res) => {
         if ((resourceType === "image" || resourceType === "raw") && fileMetadata.size > 10485760) {
             console.log("BIG");
             req.flash("error", "File is must be less than or equal to 10MB");
-            res.redirect('/home?tab=my-uploads');
+            res.redirect('/home');
         }
         if (resourceType === "video" && fileMetadata.size > 104857600) {
             console.log("BIG");
             req.flash("error", "Video is must be less than or equal to 100MB");
-            res.redirect('/home?tab=my-uploads');
+            res.redirect('/home');
         }
         // Calculate file size
         const sizeInKB = fileMetadata.size / 1024;
@@ -47,7 +47,7 @@ exports.fileUpload = async (req, res) => {
         const uploadResult = await fileUpload(filePath, resourceType, `files/${fileName}`);
         if (!uploadResult) {
             req.flash("error", "File Not Uploaded");
-            res.redirect('/home?tab=my-uploads');
+            res.redirect('/home');
         }
         const uploadData = {
             url: uploadResult.url,
@@ -63,7 +63,7 @@ exports.fileUpload = async (req, res) => {
         await upload.save();
 
         req.flash('success', "File Uploaded Successfully")
-        return res.redirect('/home?tab=my-uploads');
+        return res.redirect('/home');
     } catch (error) {
         console.error('Error uploading file:', error);
         return res.status(500).send('Error uploading file');
@@ -80,14 +80,14 @@ exports.shareFile = async (req, res) => {
         const recipient = await User.findOne({ email });
         if (!recipient) {
             req.flash('error', "User Not found");
-            return res.redirect('/home?tab=my-uploads');
+            return res.redirect('/home');
         }
 
         const file = await UploadModel.findOne({ title: fileId });
 
         if (!file) {
             req.flash('error', "File Not Found");
-            return res.redirect('/home?tab=my-uploads');
+            return res.redirect('/home');
         }
         recipient.sharedFiles = recipient.sharedFiles || [];
         recipient.sharedFiles.push({
@@ -182,7 +182,7 @@ exports.shareFile = async (req, res) => {
 `
         const isMail = await mailService(email, "File Shared", htmlMsg);
         req.flash('success', "File Shared Successfully");
-        return res.redirect('/home?tab=my-uploads');
+        return res.redirect('/home');
     } catch (err) {
         console.error('Error sharing file:', err);
         return res.status(500).json({ success: false, message: 'An error occurred while sharing the file.' });
@@ -196,11 +196,11 @@ exports.deleteFile = async (req, res) => {
         const isDelete = await deleteFile(fileName);
         if (!isDelete) {
             req.flash('error', "File Not Deleted")
-            return res.redirect('/home?tab=my-uploads');
+            return res.redirect('/home');
         }        
         await UploadModel.findOneAndDelete({ title: fileName });
         req.flash('success', "File Deleted Successfully")
-        return res.redirect('/home?tab=my-uploads');
+        return res.redirect('/home');
     } catch (error) {
         return errorResponse(req, res, status.INTERNAL_SERVER_ERROR, error.message);
     }
@@ -218,7 +218,7 @@ exports.deleteAfterDownload = async (req, res) => {
         const user = await User.findOne({ _id: userId });
         if (!user) {
             req.flash('error', "User Not Found")
-            res.redirect('/home?tab=my-uploads');
+            res.redirect('/home');
         }
         const fileIndex = user.sharedFiles.findIndex(
             (file) =>
@@ -232,7 +232,7 @@ exports.deleteAfterDownload = async (req, res) => {
             }
         }
         req.flash('success', "File Downloaded")
-        return res.redirect('/home?tab=my-uploads');
+        return res.redirect('/home');
     } catch (error) {
         console.error('Error during file deletion:', error.message);
         res.status(500).send('Error occurred while deleting the file.');
