@@ -80,8 +80,13 @@ router.get('/shared-files', authentication, async (req, res) => {
             }
         }
 
+        if (user) {
+            res.render('shared-files', { uploads: files });
+        }
 
-        res.render('shared-files', { uploads: files });
+        res.render('home', { messages: req.flash() });
+
+
     } catch (error) {
         console.error('Error fetching uploads:', error);
         res.status(500).send('Error fetching uploads');
