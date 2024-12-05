@@ -8,6 +8,8 @@ const cookieParser = require('cookie-parser');
 const { connectDb } = require('./src/config/db');
 const { request } = require('http');
 app.use(cookieParser());
+const { initializePlans } = require('./src/utils/initials');
+
 
 
 // Middleware
@@ -34,6 +36,8 @@ app.use(flash());
 
 //connect db
 connectDb();
+//initials plans data 
+initializePlans();
 
 
 app.use((req, res, next) => {
@@ -41,11 +45,15 @@ app.use((req, res, next) => {
     next();
 });
 
+
 const viewsRoutes = require('./src/routes/common/viewsRoutes');
 app.use('/', viewsRoutes);
 
 const fileUploadRoutes = require('./src/routes/user/fileUploadRoutes');
 app.use('/file', fileUploadRoutes);
+
+const paymentRoutes = require('./src/routes/user/paymentRoutes');
+app.use('/payment', paymentRoutes);
 
 //user routes
 const userRoutes = require('./src/routes/user/userRoutes');

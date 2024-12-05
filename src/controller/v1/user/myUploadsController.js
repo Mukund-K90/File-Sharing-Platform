@@ -209,12 +209,30 @@ exports.deleteFile = async (req, res) => {
 
 exports.deleteAfterDownload = async (req, res) => {
     try {
+
+        const userId = req.user._id;
         const { fileName } = req.params;
+        const mainFile = await UploadModel.findOne({ title: fileName });
+
+
+        const user = await User.findOne({ _id: userId });
+        if (!user) {
+            req.flash('error', "User Not Found")
+            res.redirect('/home?tab=my-uploads');
+        }
+        const fileIndex = user.sharedFiles.findIndex(
+            (file) =>
+                file.fileId === mainFile._id
+        );
         const isDelete = await deleteFile(fileName);
         if (isDelete) {
-            await UploadModel.findOneAndDelete({ title: fileName });
+            if (fileIndex === -1) {
+                user.sharedFiles.splice(fileIndex, 1);
+                await user.save();
+            }
         }
-        res.status(200).send({ message: 'File will be deleted after download.' });
+        req.flash('success', "File Downloaded")
+        res.redirect('/home?tab=my-uploads');
     } catch (error) {
         console.error('Error during file deletion:', error.message);
         res.status(500).send('Error occurred while deleting the file.');

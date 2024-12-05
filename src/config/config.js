@@ -13,5 +13,7 @@ exports.CONFIG = {
     stripeScretKey: process.env.STRIPE_SECRET_KEY,
     email: process.env.EMAIL,
     password: process.env.PASSWORD,
+    razorPayKeyId: process.env.RAZORPAY_KEY_ID,
+    razorPayKeySecret: process.env.RAZORPAY_KEY_SECRET,
 };
 

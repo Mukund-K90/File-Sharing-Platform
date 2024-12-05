@@ -7,7 +7,7 @@ const { authentication } = require('../../middleware/auth.middleware');
 router.post('/upload', authentication, upload, fileUpload);  // POST route for uploading files
 router.post('/share', authentication, shareFile);
 router.delete('/delete-file/:fileId', authentication, deleteFile);
-router.post('/delete-after-download/:fileName', deleteAfterDownload);
+router.post('/delete-after-download/:fileName', authentication, deleteAfterDownload);
 
 
 module.exports = router;
