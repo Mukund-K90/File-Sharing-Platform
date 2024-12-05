@@ -81,13 +81,15 @@ exports.shareFile = async (req, res) => {
     try {
         const recipient = await User.findOne({ email });
         if (!recipient) {
-            return res.status(404).json({ success: false, message: 'Recipient not found' });
+            req.flash('error', "User Not found");
+            res.redirect('/home?tab=my-uploads');
         }
 
         const file = await UploadModel.findOne({ title: fileId });
 
         if (!file) {
-            return res.status(404).json({ success: false, message: 'File not found' });
+            req.flash('error', "File Not Found");
+            res.redirect('/home?tab=my-uploads');
         }
 
         recipient.sharedFiles = recipient.sharedFiles || [];
