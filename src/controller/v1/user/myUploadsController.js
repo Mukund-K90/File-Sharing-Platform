@@ -171,7 +171,7 @@ exports.shareFile = async (req, res) => {
             <p>Hello,</p>
             <p><strong>${user.name}</strong> has shared a file with you.</p>
             <p>Click the button below to view the file:</p>
-            <a href="https://file-sharing-platform-bfzs.onrender.com/shared-files" class="btn" target="_blank">Open File</a>
+            <a href="https://file-sharing-platform-bfzs.onrender.com" class="btn" target="_blank">Open File</a>
         </div>
         <div class="email-footer">
             <p>If you have any questions, please contact our support team.</p>
