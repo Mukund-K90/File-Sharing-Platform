@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema({
                 email: String,
                 sharedDate: {
                     type: Date,
-                    default: Date.now
                 },
             },
 
