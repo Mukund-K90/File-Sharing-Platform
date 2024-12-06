@@ -32,6 +32,7 @@ const planSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+    planId: String
 });
 
 const Plan = mongoose.model("Plan", planSchema);

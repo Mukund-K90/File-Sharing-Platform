@@ -6,6 +6,7 @@ const plans = [
         description: "Free forever",
         price: 0,
         duration: "monthly",
+        planId:"free",
         features: [
             { feature: "Management", limit: { users: 3 } },
             { feature: "Product Environments", limit: { count: 1 } },
@@ -21,6 +22,7 @@ const plans = [
         description: "Extend your team’s digital media capabilities for websites & apps.",
         price: 99,
         duration: "monthly",
+        planId:"lan_PTlmcqzJn9toAM",
         features: [
             { feature: "Management", limit: { users: 3 } },
             { feature: "Product Environments", limit: { count: 2 } },
@@ -36,6 +38,7 @@ const plans = [
         description: "Create engaging visual experiences with advanced features.",
         price: 249,
         duration: "monthly",
+        planId:"plan_PTmCPSXJWIXLfj",
         features: [
             { feature: "Management", limit: { users: 5 } },
             { feature: "Product Environments", limit: { count: 3 } },

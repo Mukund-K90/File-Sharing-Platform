@@ -1,20 +1,31 @@
-const { createSubscription, createCustomer, generateSubscriptionLink } = require("../../../utils/razorpay");
-
+const { createSubscription, generateSubscriptionLink, checkCustomer, createCustomer, } = require("../../../utils/razorpay");
+const Subscription = require('../../../model/subscription');
 exports.buySubscription = async (req, res) => {
-    const { email, name, planId } = req.body;
 
     try {
+        const { planId } = req.params.planId;
+        const user = req.user;
+        let customerId = "";
+        const subscriptionDetails = await Subscription.findOne({ userId: user._id }).where({ createdAt: -1 });
+        if (!subscriptionDetails) {
+            const newCustomer = await createCustomer(user.email, user.name, user.mobile);
+            customerId = newCustomer.id;
+        }
+        customerId = subscriptionDetails.customerId;
+
+
         // Create a subscription
-        const subscription = await createSubscription(planId, email, name);
+        const subscription = await createSubscription(planId, customerId);
 
-        // Generate payment link
-        const paymentLink = generateSubscriptionLink(subscription.id);
-
+        if (subscription) {
+            const addsubscriptionData = await Subscription({ planId, customerId, userId: user._id });
+            addsubscriptionData.save();
+        }
         res.status(200).json({
             success: true,
             message: "Subscription created successfully",
             subscriptionId: subscription.id,
-            paymentLink,
+            paymentLink: subscription.short_url,
         });
     } catch (error) {
         console.error("Subscription error:", error);

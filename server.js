@@ -13,6 +13,7 @@ const { initializePlans } = require('./src/utils/initials');
 
 
 // Middleware
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/assets', express.static(path.join(__dirname, 'src/assets')));
 
